@@ -1,0 +1,23 @@
+.header {
+	border: 25px solid #D5467;
+    padding: 40px;
+    background-color: #3D5467;
+    text-align: center;
+}
+
+#head1{
+	text-align:center;
+	color: #F1EDEE;	
+	font-family: Georgia, serif;
+	font-weight: bold;
+	font-style: italic;
+	font-size: 120%;
+}
+
+#head2{
+    text-align: center;
+    color: #FFFFFF;
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 100%;
+}
