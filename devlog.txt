@@ -8,3 +8,5 @@ connieC -- 2017-11-21 2:02
   Played around with API to figure out how to use it.
 karenC -- 2017-11-21 2:01
   Created app.py and the html templates.
+karenC -- 2017-11-22 1:55
+  Began implementing Foundation to index.html, writing styles.css
