@@ -10,3 +10,5 @@ karenC -- 2017-11-21 2:01
   Created app.py and the html templates.
 karenC -- 2017-11-22 1:55
   Began implementing Foundation to index.html, writing styles.css
+karenc —- 2017-11-27 2:03
+  Created the input form (still in need to stylization), beginning to connect app.py with html templates
