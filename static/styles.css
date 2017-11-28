@@ -1,12 +1,17 @@
 .header {
-	border: 25px solid #D5467;
+    border: 25px solid #D5467;
     padding: 40px;
-    background-color: #3D5467;
+    background-color: #794209;
     text-align: center;
 }
 
 .header2{
     padding-top: 10px;
+}
+
+.pad{
+    padding: 100px;
+    text-align: center;
 }
 
 #head1{

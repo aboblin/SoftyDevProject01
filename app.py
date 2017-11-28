@@ -8,9 +8,9 @@ app = Flask(__name__)
 def root():
 	#r = requests.get("https://api.nasa.gov/planetary/apod?api_key=CJIKeQKz4nuOpRSiMmW2qWB7qylNrE717O2q30Va")
 	#dictionary = r.json()
-        if request.method == 'POST':
+       if request.method == 'POST':
                 return render_template('recipes.html')
-        else:
+       else:
 	        return render_template('index.html')
 
 	
