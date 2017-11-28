@@ -1,6 +1,12 @@
 import json, requests
 
-#Input an api_link, returns json of data recieved from the api
+def getKey():
+        f = open('key','r')
+        key = f.read()
+        f.close()
+        return key
+
+#input an api_link, returns json of data recieved from the api
 def api_to_json(api_link):
 	url = requests.get(api_link)
 	return url.json()
@@ -8,7 +14,7 @@ def api_to_json(api_link):
 def search_json(ingredients):
 	api_link = "http://food2fork.com/api/search?api=API_KEY&q="
 	for ingredient in ingredients:
-		 api_link += ingredient + ','
+		api_link += ingredient + ','
 	return api_to_json(api_link)
 
 def recipe_json(recipeID):
