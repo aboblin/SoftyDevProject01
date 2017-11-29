@@ -18,6 +18,8 @@ karenC —- 2017-11-27 10:57
   Began laying out recipes.html structure
 boylanA -- 2017-11-28 2:05
   Completed base functions for recipe_func.py
+connieL -- 2017-11-28 8:45
+  Finished nutri_func.py
 karenC -- 2017-11-29 12:31
   Connected app.py with the API python files, debugging
 boylanA -- 2017-11-29 4:30 
