@@ -36,7 +36,6 @@ def nutri(nutrient, unit):
 
 def getNutri(ID, amount, unit):
     link = "https://api.nal.usda.gov/ndb/reports?ndbno=%s&type=b&format=json&api_key=%s" % (ID, getKey())
-    print link
     r = requests.get(link)
     d = r.json()
     if 'errors' in d:
@@ -55,28 +54,3 @@ def getNutri(ID, amount, unit):
 
 stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant']}
 print addDetails(stuff)
-
-'''
-https://api.nal.usda.gov/ndb/search/?format=xml&ds=Standard+Reference&q=apples&api_key=DEMO_KEY
-
-needs to be raw for ingredients
-ie. apple returns croissant, apple
-BUT if we search raw apple,
-actually returns the apple we want
-if we search raw apple croissant (??) it works too
-
-use standard reference
-b/c otherwise the other give you 4k pages
-
-filter out babyfoods? 8 pgs
-beef products 20 pgs
-breakfast cereals 8 pgs	
-baked goods 18 pgs
-	
-really only ones we need are:
-dairy and eggs
-cereal grains and pasta
-etc.
-
-give peeps an option to search up a brand thing tho
-'''
