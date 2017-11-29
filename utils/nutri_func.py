@@ -9,8 +9,9 @@ def getKey():
 def addDetails(ingreds):
     for i in ingreds:
         ndbno = getID(i)
-        nutrients = getNutri(ndbno)#getNutri(ndbno, ingreds[i][0], ingreds[i][1])
+        nutrients = getNutri(ndbno, ingreds[i][0], ingreds[i][1])
         ingreds[i] += [ndbno]
+        ingreds[i] += nutrients
     return ingreds
 
 def getID(ingred):
@@ -24,25 +25,35 @@ def getID(ingred):
 def calcNutr(amount, unit):
     return amount * unit
 
-#def getNutri(ID, amount, unit):
-def getNutri(ID):
+def nutri(nutrient, unit):
+    u = unit
+    if(len(unit) >= 3):
+        u = unit[0:len(unit)-1]
+    for measurement in nutrient:
+        if u in measurement['label']:
+            return float(measurement['value'])
+    return -1
+
+def getNutri(ID, amount, unit):
     link = "https://api.nal.usda.gov/ndb/reports?ndbno=%s&type=b&format=json&api_key=%s" % (ID, getKey())
     print link
     r = requests.get(link)
     d = r.json()
     if 'errors' in d:
-        return [0, 0, 0]
+        return [-1, -1, -1]
     nutrients = d['report']['food']['nutrients']
-    for n in nutrients:
-        print n['name']
-    '''
-    protein = calcNutr(amount,)
-    carbs = calcNutr(amount,)
-    fats = calcNutr(amount,)
-    return [protein, carbs, fats]
-    '''
+    protein = nutrients[2]['measures']
+    protein = calcNutr(amount, nutri(protein, unit))
 
-stuff = {"apple":[], 'orange':[]}
+    fats = nutrients[3]['measures']
+    fats = calcNutr(amount, nutri(fats, unit))
+
+    carbs = nutrients[4]['measures']
+    carbs = calcNutr(amount, nutri(carbs, unit))
+    
+    return [carbs, protein, fats]
+
+stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant']}
 print addDetails(stuff)
 
 '''
