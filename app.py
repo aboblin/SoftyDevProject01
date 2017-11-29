@@ -6,22 +6,20 @@ import json
 
 app = Flask(__name__)
 
-chosen = []
-
 def findRecipes(item):
-       recipes=search_json(request.form["food"])
-       if request.form["carb"] != "":
+       recipes=search_json(item)
+       if request.form["carb"] == "":
               carbamount = 0
        else:
-              carbamount = request.form["carb"]
-       if request.form["protein"] != "":
+              carbamount = float(request.form["carb"])
+       if request.form["protein"] == "":
               proteinamount = 0
        else:
-              proteinamount = request.form["protein"]
-       if request.form["fat"] != "":
+              proteinamount = float(request.form["protein"])
+       if request.form["fat"] == "":
               fatamount = 0
        else:
-              fatamount = request.form["fat"]
+              fatamount = float(request.form["fat"])
        recipeIDs = []
        for recipe in recipes:
               recipeIDs.append(recipe_id(recipe))
@@ -29,6 +27,7 @@ def findRecipes(item):
        for recipeID in recipeIDs:
               nutrient_info = sumNutri(addDetails(get_ingredients_dict(recipeID)))
               differences.append(abs(nutrient_info[0] - carbamount) + abs(nutrient_info[1] - proteinamount) + abs(nutrient_info[2] - fatamount))
+       chosen = []
        chosen1 = recipeIDs[differences.index(min(differences))]
        chosen.append(chosen1)
        differences.pop(differences.index(min(differences)))
@@ -45,9 +44,10 @@ def root():
 	#r = requests.get("https://api.nasa.gov/planetary/apod?api_key=CJIKeQKz4nuOpRSiMmW2qWB7qylNrE717O2q30Va")
 	#dictionary = r.json()
        if request.method == 'POST':
-                return render_template('recipes.html', recipe_one = recipe_title(recipe_json(chosen[0])), recipe1url = recipe_source_url(recipe_json(chosen[0])), recipe_two = recipe_title(recipe_json(chosen[1])), recipe2url = recipe_source_url(recipe_json(chosen[1])), recipe_three = recipe_title(recipe_json(chosen[2])), recipe3url = recipe_source_url(recipe_json(chosen[2])))
+              thechosen = findRecipes(request.form["food"])
+              return render_template('recipes.html', recipe_one = recipe_title(recipe_json(thechosen[0])), recipe1url = recipe_source_url(recipe_json(thechosen[0])), recipe_two = recipe_title(recipe_json(thechosen[1])), recipe2url = recipe_source_url(recipe_json(thechosen[1])), recipe_three = recipe_title(recipe_json(thechosen[2])), recipe3url = recipe_source_url(recipe_json(thechosen[2])))
        else:
-	        return render_template('index.html')
+              return render_template('index.html')
 
 	
 if __name__ == '__main__':
