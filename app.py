@@ -6,6 +6,8 @@ import json
 
 app = Flask(__name__)
 
+chosen = []
+
 def findRecipes(item):
        recipes=search_json(request.form["food"])
        if request.form["carb"] != "":
@@ -27,7 +29,6 @@ def findRecipes(item):
        for recipeID in recipeIDs:
               nutrient_info = sumNutri(addDetails(get_ingredients_dict(recipeID)))
               differences.append(abs(nutrient_info[0] - carbamount) + abs(nutrient_info[1] - proteinamount) + abs(nutrient_info[2] - fatamount))
-       chosen = []
        chosen1 = recipeIDs[differences.index(min(differences))]
        chosen.append(chosen1)
        differences.pop(differences.index(min(differences)))
