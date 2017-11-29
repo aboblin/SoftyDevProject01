@@ -56,12 +56,15 @@ def sumNutri(ingreds):
     carbs = 0
     protein = 0
     fats = 0
+    broken = []
     for i in ingreds:
         if(ingreds[i][3] > 0):
             carbs += ingreds[i][3]
             protein += ingreds[i][4]
             fats += ingreds[i][5]
-    return [carbs, protein, fats] 
+        else:
+            broken += [i]
+    return [carbs, protein, fats, broken]
 
 stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant']}
 print addDetails(stuff)
