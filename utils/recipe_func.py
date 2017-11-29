@@ -1,7 +1,7 @@
 import json, requests
 
 def getKey():
-        f = open('utils/key','r')
+        f = open('static/key','r')
         key = f.read()
         f.close()
         return key

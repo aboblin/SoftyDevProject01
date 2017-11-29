@@ -1,7 +1,7 @@
 import requests, json
 
 def getKey():
-    f = open("govkey","r")
+    f = open("static/govkey","r")
     key = f.read()
     f.close()
     return key
@@ -67,6 +67,6 @@ def sumNutri(ingreds):
         else:
             broken += [i]
     return [carbs, protein, fats, broken]
-
-stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'peppeer':[1, 'giant'],  'coconut':[1, 'giant']}
-print addDetails(stuff)
+if __name__ == "__main__":
+	stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'peppeer':[1, 'giant'],  'coconut':[1, 'giant']}
+	print addDetails(stuff)
