@@ -1,0 +1,2 @@
+thechosen = findRecipes(request.form["food"])
+              return render_template('recipes.html', recipe_one = recipe_title(recipe_json(thechosen[0])), recipe1url = recipe_source_url(recipe_json(thechosen[0])), recipe_two = recipe_title(recipe_json(thechosen[1])), recipe2url = recipe_source_url(recipe_json(thechosen[1])), recipe_three = recipe_title(recipe_json(thechosen[2])), recipe3url = recipe_source_url(recipe_json(thechosen[2])))
