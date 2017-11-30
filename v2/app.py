@@ -13,7 +13,6 @@ def findRecipes(searchTerms):
        differences = []
 
        for recipeID in recipeIDs:
-              ingreds = 
               nutrient_info = sumNutri(addDetails(get_ingredients_dict(recipeID)))
               differences.append(abs(nutrient_info[0] - carbamount) + abs(nutrient_info[1] - proteinamount) + abs(nutrient_info[2] - fatamount))
        chosen = []

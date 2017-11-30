@@ -28,7 +28,7 @@ def getNutri(ID, amount, unit):
     if 'errors' in d:
         return [-1, -1, -1]
     nutrients = d['report']['food']['nutrients']
-    print nutrients[2]['name'] +  nutrients[3]['name'] +  nutrients[4]['name']
+    #print nutrients[2]['name'] +  nutrients[3]['name'] +  nutrients[4]['name']
     
     protein = nutrients[2]['measures']
     protein = calcNutr(amount, nutri(protein, unit))
@@ -62,11 +62,12 @@ def sumNutri(ingreds):
     for i in ingreds:
         if(ingreds[i][3] > 0):
             carbs += ingreds[i][3]
-            protein += ingreds[i][4]
+	    protein += ingreds[i][4]
             fats += ingreds[i][5]
         else:
             broken += [i]
     return [carbs, protein, fats, broken]
+
 if __name__ == "__main__":
-	stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'peppeer':[1, 'giant'],  'coconut':[1, 'giant']}
-	print addDetails(stuff)
+    stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'peppeer':[1, 'giant'],  'coconut':[1, 'giant']}
+    print addDetails(stuff)

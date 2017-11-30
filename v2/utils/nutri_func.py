@@ -1,7 +1,7 @@
 import requests, json
 
 def getKey():
-    f = open("../static/govkey","r")
+    f = open("static/govkey","r")
     key = f.read()
     f.close()
     return key
