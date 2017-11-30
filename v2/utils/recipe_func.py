@@ -13,7 +13,8 @@ def getLink(ingreds):
         api_link = "http://food2fork.com/api/search?key=%s&q=%s" % (getKey(), terms)
         return api_link
 
-def getRecipes(link):
+def getRecipes(ingreds):
+        link = getLink(ingreds)
         r = requests.get(link)
         d = r.json()
         return d['recipes']
@@ -21,12 +22,49 @@ def getRecipes(link):
 def getRecipeIDs(recipes):
         rIDs = []
         for r in recipes:
-                print r
-                print ""
                 rIDs += [r['recipe_id']]
-        print rIDs
-        
-getRecipeIDs(getRecipes(getLink(['cheese', 'bread'])))
+        return rIDs
+
+def getRecipeInfo(rID):
+        link = "http://food2fork.com/api/get?key=%s&rId=%s" % (getKey(), rID)
+        r = requests.get(link)
+        d = r.json()
+        return d['recipe']
+
+def getIngreds(rID):
+        info = getRecipeInfo(rID)
+        ingreds = info['ingredients']
+        d = {}
+        for i in ingreds:
+                c = cleanup(i)
+                if(c["name"] != ""):
+                        d[c["name"]] = ""
+                        #d[c["name"]] = d[c["info"]]
+        return d
+
+def cleanup(i):
+        useless = ["salt", "pepper", "optional"]
+        for u in useless:
+                if u in i:
+                        return { "name" : ""}
+        return { "name" : i}
+
+'''
+print cleanup("salt and pepper to taste")
+d = {}
+ingreds = ["salt and pepper to taste"]
+for i in ingreds:
+        c = cleanup(i)
+        if(c["name"] != ""):
+                d[c["name"]] = ""
+print d
+'''
+
+for x in range(4):
+        print getIngreds(35382 + x)
+
+#getIngreds(35382)
+#getRecipeIDs(getRecipes(['cheese', 'bread']))
 
 '''
 def recipe_title(json):
@@ -34,9 +72,6 @@ def recipe_title(json):
 
 def recipe_source_url(json):
 	return json['source_url']
-
-def recipe_id(json):
-	return json['recipe_id']
 
 #give a recipe Id (received from the search_json), function uses a get request to receive json and returns that json
 def recipe_json(recipeID):

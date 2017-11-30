@@ -1,7 +1,7 @@
 import requests, json
 
 def getKey():
-    f = open("static/govkey","r")
+    f = open("../static/govkey","r")
     key = f.read()
     f.close()
     return key
@@ -28,7 +28,6 @@ def getNutri(ID, amount, unit):
     if 'errors' in d:
         return [-1, -1, -1]
     nutrients = d['report']['food']['nutrients']
-    print nutrients[2]['name'] +  nutrients[3]['name'] +  nutrients[4]['name']
     
     protein = nutrients[2]['measures']
     protein = calcNutr(amount, nutri(protein, unit))
@@ -49,6 +48,7 @@ def nutri(nutrient, unit):
     if(len(unit) >= 3):
         u = unit[0:len(unit)-1]
     for measurement in nutrient:
+        print measurement['label']
         if u in measurement['label']:
             return float(measurement['value'])
     return -1
@@ -67,6 +67,12 @@ def sumNutri(ingreds):
         else:
             broken += [i]
     return [carbs, protein, fats, broken]
+
+'''
 if __name__ == "__main__":
-	stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'peppeer':[1, 'giant'],  'coconut':[1, 'giant']}
+	stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'pepper':[1, 'giant'],  'coconut':[1, 'giant']}
 	print addDetails(stuff)
+'''
+
+stuff = {"sesame oil":[1, "teaspoon"]}
+print addDetails(stuff)
