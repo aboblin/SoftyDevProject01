@@ -47,58 +47,65 @@ def getIngreds(rID):
         return d
 
 def cleanup(i):
+        info = {"name":"", "info":[0, ""]}
+
+        #removing useless
         useless = ["salt", "pepper", "optional"]
         for u in useless:
                 if u in i:
-                        return { "name" : ""}
+                        return info
+        #end removing useless
+                
+        #removing all (...)
         while "(" in i:
                 ssnip = i.find("(")
                 esnip = i.find(")")
                 i = i[0:ssnip] + i[esnip:]
                 i = i.replace(")", " ")
+        #end removing all (...)
+        
+        i = rmxtraWS(i)
+        
+        #parsing for amount
+        esnip = i.find(" ")
+        if '/' in i:
+                info["info"][0] = frac_float(i[:esnip])
+        else:
+                info["info"][0] = float(i[:esnip])
+        i = i[esnip:]
+        #end parsing for amount
+        
+        if "green onion" in i:
+                info["name"] = "green onion"
+                info["info"][1] = "stalk"
+        print i
+        print info
 
+def frac_float(string):
+        split = string.find("/")
+        num = string[:split]
+        den = string[split + 1:]
+        try:
+                return float(num)/float(den)
+        except:
+                return -1
+
+def rmxtraWS(i):
         while "\n" in i:
                 i = i.replace("\n", "")
-
+        i = " ".join(i.split())
+        return i
         
-
-        print i
-        return { "name" : i}
-
-
+cleanup("1 cup flour")
+cleanup("2 green onions (chopped)")
+cleanup("1 (4 ounce) package cream cheese (room temperature)")
+'''
 for x in range(10):
         getIngreds(35382 + x)
-'''
+
 cleanup("2 jalapenos, diced (seed them is you prefer less heat)")
 '''
-'''
-a = ["1 (9 inch) pie shell, pre-baked",
-     "2 jalapenos, diced (seed them is you prefer less heat)",
-     "2 tablespoons jerk seasoning paste (your favorite brand or see below)",
-     "1 pound white fish fillets (I used tilapia)",
-     "2 pounds short ribs (trimmed)",
-     "4 cloves garlic (chopped)",
-     "1 inch ginger (grated)",
-     "4 green onions (sliced)",
-     "1/2 onion (grated)",
-     "1 Asian pear (grated)",
-     "1 tablespoon sesame seeds (toasted and crushed)",
-     "2 green onions (sliced)",
-     "1(4 ounce)package cream cheese (room temperature)",
-     "1/4 cup grated parmigiano reggiano (grated)",
-     "1/4 cup mozzarella (grated)",
-     "1/4 cup grated parmigiano reggiano (grated)",
-     "2 strips bacon (cut into bite sized pieces, optional)",
-     "1 green onion (sliced)",
-     "1 teaspoon sesame seeds (toasted)",
-     "2 strips of bacon (cut into 1/2 inch pieces)",
-     "2 green onions (chopped)"]
 
-for x in a:
-        cleanup(x)
-'''
-#getIngreds(35382)
-#getRecipeIDs(getRecipes(['cheese', 'bread']))
 
 '''
 def recipe_title(json):
@@ -106,13 +113,4 @@ def recipe_title(json):
 
 def recipe_source_url(json):
 	return json['source_url']
-
-#creates a dictionary of the ingredients from a recipe in the format {ingredient_name:[amount, unit_of_measurement]}
-def get_ingredients_dict(recipeID):
-	dic = {}
-	for ingredient in recipe_json(recipeID)['ingredients']:
-		ing_list = ingredient.split(' ')
-		removable_parts = ing_list[0].encode("utf-8") + " " + ing_list[1].encode("utf-8")
-		dic[ingredient[len(removable_parts)+1:].encode("utf-8")] = [ing_list[0].encode("utf-8"), ing_list[1].encode("utf-8")]
-	return dic
 '''

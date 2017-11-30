@@ -72,7 +72,9 @@ def sumNutri(ingreds):
 if __name__ == "__main__":
 	stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'pepper':[1, 'giant'],  'coconut':[1, 'giant']}
 	print addDetails(stuff)
+
+{"sesame oil":[1, "teaspoon"]}
 '''
 
-stuff = {"sesame oil":[1, "teaspoon"]}
+stuff = {"green onion":[1, "stalk"]}
 print addDetails(stuff)
