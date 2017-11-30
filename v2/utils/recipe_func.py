@@ -68,14 +68,11 @@ def cleanup(i):
                 i = i.replace(")", " ")
         #end removing all (...)
 
-        #remove extra whitespace
-        i = rmxtraWS(i)
-        
         #parsing for amount
         esnip = i.find(" ")
         if '/' in i:
                 info["info"][0] = frac_float(i[:esnip])
-                i = i[i.find(" "):]
+                i = i[esnip:]
         else:
                 info["info"][0] = float(i[:esnip])
                 i = i[esnip:]
@@ -85,9 +82,24 @@ def cleanup(i):
         while "," in i:
                 ssnip = i.find(",")
                 i = i[:ssnip]
-                #end cutting off extra
+        #end cutting off extra
 
-
+        #include check for "of"
+        
+        #remove extra whitespace
+        i = rmxtraWS(i)
+        
+        convert = {"cups":"cup",
+                   "cup":"cup",
+                   "slices":"slice",
+                   "tablespoon":"tablespoon",
+                   "tablespoons":"tablespoon",
+                   "teaspoons":"tsp",
+                   "teaspoon":"tsp",
+                   "large":"large",
+                   "small":"small"}
+        #print i[i.find(" ") + 1:]
+        
         return info
 
 def frac_float(string):
@@ -102,7 +114,7 @@ def frac_float(string):
 def rmxtraWS(i):
         while "\n" in i:
                 i = i.replace("\n", "")
-                i = " ".join(i.split())
+        i = " ".join(i.split())
         return i
 
 def amtNotIn(i):

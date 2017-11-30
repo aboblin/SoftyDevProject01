@@ -47,3 +47,6 @@ connieL -- 2017-11-29 11:47 PM
 
 connieL -- 2017-11-30 10:58 AM
   Worked more on parsing ingredients list, almost usable format
+
+connieL -- 2017-11-20 12:49 PM
+  Worked more on parsing ingredients list, almost usable format
