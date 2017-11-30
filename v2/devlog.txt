@@ -39,4 +39,10 @@ connieL -- 2017-11-29 7:09
   Cleaned up index.html so that inputs take only positive numbers with two decimals, added required to food box
   Cleaned up everything
 
+connieL -- 2017-11-29 11:47
+  Reworked all of recipe_func.py
+  Changed interations between app.py and recipe_func.py
+  Wrote recipe functions written to be used in app.py into recipe_func.py
+  Tested parsing the API ingredients list for a long.....time......
+
 

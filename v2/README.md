@@ -14,7 +14,6 @@ Enter in an amount of protein, carbs, and fats, and a food item you'd like to co
 4. Enjoy :)
 
 Connie's Notes:
-
 https://foundation.zurb.com/forum/posts/16422-using-button-to-submit-form
 Creating a submit button for POST requests using Foundation styling
 
@@ -23,3 +22,4 @@ for all decimals
 
 need a way to not allow negative numbers
 min="0" input attribute
+
