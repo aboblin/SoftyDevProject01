@@ -21,7 +21,7 @@ def getID(ingred):
         return -1
     return d['list']['item'][0]['ndbno']
 
-def getNutri(ID, amount, unit):
+def getNutri(ID, amt, unit):
     link = "https://api.nal.usda.gov/ndb/reports?ndbno=%s&type=b&format=json&api_key=%s" % (ID, getKey())
     r = requests.get(link)
     d = r.json()
@@ -29,14 +29,10 @@ def getNutri(ID, amount, unit):
         return [-1, -1, -1]
     nutrients = d['report']['food']['nutrients']
     
-    protein = nutrients[2]['measures']
-    protein = calcNutr(amount, nutri(protein, unit))
-
-    fats = nutrients[3]['measures']
-    fats = calcNutr(amount, nutri(fats, unit))
-
-    carbs = nutrients[4]['measures']
-    carbs = calcNutr(amount, nutri(carbs, unit))
+    carbs, protein, fats = (nutrients[4]['measures'], nutrients[2]['measures'], nutrients[3]['measures'])
+    protein = calcNutr(amt, nutri(protein, unit))
+    fats = calcNutr(amt, nutri(fats, unit))
+    carbs = calcNutr(amt, nutri(carbs, unit))
     
     return [carbs, protein, fats]
 
@@ -44,20 +40,18 @@ def calcNutr(amount, unit):
     return amount * unit
 
 def nutri(nutrient, unit):
-    u = unit
-    if(len(unit) >= 3):
-        u = unit[0:len(unit)-1]
     for measurement in nutrient:
-        print measurement['label']
-        if u in measurement['label']:
-            return float(measurement['value'])
+        if measurement != None:
+            print measurement['label']
+            '''
+            if unit in measurement['label']:
+                return float(measurement['value'])
+            '''
     return -1
 
 def sumNutri(ingreds):
     ingreds = addDetails(ingreds)
-    carbs = 0
-    protein = 0
-    fats = 0
+    carbs, protein, fats, broken = (0,0,0, [])
     broken = []
     for i in ingreds:
         if(ingreds[i][3] > 0):
@@ -76,5 +70,5 @@ if __name__ == "__main__":
 {"sesame oil":[1, "teaspoon"]}
 '''
 
-stuff = {"green onion":[1, "stalk"]}
+stuff = {"cheese":[1, ""]}
 print addDetails(stuff)
