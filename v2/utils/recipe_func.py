@@ -1,23 +1,34 @@
 import json, requests
 
 def getKey():
-        f = open('static/key','r')
+        f = open('../static/key','r')
         key = f.read()
         f.close()
         return key
 
-#input an api_link, returns json recieved from the api
-def api_to_json(api_link):
-	url = requests.get(api_link)
-	return url.json()
+def getLink(ingreds):
+        terms = ""
+        for i in ingreds:
+                terms += (i + ",")
+        api_link = "http://food2fork.com/api/search?key=%s&q=%s" % (getKey(), terms)
+        return api_link
 
-#give a list of ingredients, function uses a search request to receive json and returns that json
-def search_json(ingredients):
-	api_link = "http://food2fork.com/api/search?key=%s&q=" % getKey()
-	for ingredient in ingredients:
-		api_link += ingredient + ','
-	return api_to_json(api_link)['recipes']
+def getRecipes(link):
+        r = requests.get(link)
+        d = r.json()
+        return d['recipes']
 
+def getRecipeIDs(recipes):
+        rIDs = []
+        for r in recipes:
+                print r
+                print ""
+                rIDs += [r['recipe_id']]
+        print rIDs
+        
+getRecipeIDs(getRecipes(getLink(['cheese', 'bread'])))
+
+'''
 def recipe_title(json):
 	return json['title']
 
@@ -43,6 +54,8 @@ def get_ingredients_dict(recipeID):
 	return dic
 
 if __name__ == "__main__":
-	print search_json(['cheese', 'bread'])
-	print recipe_json(35382)
-	print get_ingredients_dict(35382)
+        print 1
+	#print search_json(['cheese', 'bread'])
+	#print recipe_json(35382)
+	#print get_ingredients_dict(35382)
+'''
