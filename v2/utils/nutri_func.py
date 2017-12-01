@@ -68,6 +68,7 @@ def sumNutri(ingreds):
     return [carbs, protein, fats, broken]
 
 
+'''
 s = {'clove garlic': [1.0, ''],
      'lime': [0.5, ''],
      'pound ground beef': [1.0, ''],
@@ -83,4 +84,4 @@ s = {'clove garlic': [1.0, ''],
 
 addDetails(s)
 print s
-
+'''
