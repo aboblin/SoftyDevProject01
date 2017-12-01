@@ -1,7 +1,7 @@
-import requests, json
+import requests, json, sys
 
 def getKey():
-    f = open("static/govkey","r")
+    f = open("../static/govkey","r")
     key = f.read()
     f.close()
     return key
@@ -18,11 +18,16 @@ def getID(ingred):
     r = requests.get(link)
     d = r.json()
     if 'errors' in d:
-        return -1
+        link = "https://api.nal.usda.gov/ndb/search/?format=json&ds=Standard+Reference&q=%s&api_key=%s" % (ingred, getKey())
+        r = requests.get(link)
+        d = r.json()
+        if 'errors' in d:
+            return -1
     return d['list']['item'][0]['ndbno']
 
 def getNutri(ID, amt, unit):
     link = "https://api.nal.usda.gov/ndb/reports?ndbno=%s&type=b&format=json&api_key=%s" % (ID, getKey())
+    print link
     r = requests.get(link)
     d = r.json()
     if 'errors' in d:
@@ -62,13 +67,20 @@ def sumNutri(ingreds):
             broken += [i]
     return [carbs, protein, fats, broken]
 
-'''
-if __name__ == "__main__":
-	stuff = {"apple":[1.4, 'cup'], 'orange':[1.5, 'giant'], 'life':[1, 'giant'],  'yes':[1, 'giant'],  'pepper':[1, 'giant'],  'coconut':[1, 'giant']}
-	print addDetails(stuff)
 
-{"sesame oil":[1, "teaspoon"]}
-'''
+s = {'clove garlic': [1.0, ''],
+     'lime': [0.5, ''],
+     'pound ground beef': [1.0, ''],
+     'pound white fish fillets': [1.0, ''],
+     'batch jerk marinade': [1.0, ''],
+     'batch banana pineapple salsa': [1.0, ''],
+     'pounds short ribs': [2.0, ''],
+     'cloves garlic': [4.0, ''],
+     'inch ginger': [1.0, ''],
+     'cream cheese': [1.0, ''],
+     'leaves lettuce': [2.0, ''],
+     'strips bacon': [2.0, '']}
 
-stuff = {"cheese":[1, ""]}
-print addDetails(stuff)
+addDetails(s)
+print s
+

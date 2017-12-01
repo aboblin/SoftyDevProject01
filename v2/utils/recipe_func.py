@@ -1,7 +1,7 @@
 import json, requests
 
 def getKey():
-        f = open('static/key','r')
+        f = open('../static/key','r')
         key = f.read()
         f.close()
         return key
@@ -37,14 +37,6 @@ def getIngreds(rID):
         d = {}
         for i in ingreds:
                 print i
-                #cleanup(i)
-                '''
-                c = cleanup(i)
-                if(c["name"] != ""):
-                        d[c["name"]] = ""
-                        #d[c["name"]] = d[c["info"]]
-                '''
-        return d
 
 def cleanup(i):
         info = {"name":"", "info":[0, ""]}
@@ -57,7 +49,7 @@ def cleanup(i):
         #end removing useless
 
         #checking to make sure amount exists
-        if amtNotIn(i):
+        if not any(char.isdigit() for char in i):
                 return info       
                 
         #removing all (...)
@@ -72,35 +64,41 @@ def cleanup(i):
         esnip = i.find(" ")
         if '/' in i:
                 info["info"][0] = frac_float(i[:esnip])
-                i = i[esnip:]
         else:
                 info["info"][0] = float(i[:esnip])
-                i = i[esnip:]
-                #end parsing for amount
+        i = i[esnip:]
+        #end parsing for amount
 
         #cutting off extra
         while "," in i:
                 ssnip = i.find(",")
                 i = i[:ssnip]
         #end cutting off extra
-
-        #include check for "of"
         
         #remove extra whitespace
         i = rmxtraWS(i)
         
-        convert = {"cups":"cup",
-                   "cup":"cup",
-                   "slices":"slice",
-                   "tablespoon":"tablespoon",
-                   "tablespoons":"tablespoon",
-                   "teaspoons":"tsp",
-                   "teaspoon":"tsp",
-                   "large":"large",
-                   "small":"small"}
-        #print i[i.find(" ") + 1:]
+        convert = {"cups":"cup", "cup":"cup", "slices":"slice", "tablespoon":"tablespoon","tablespoons":"tablespoon", "teaspoons":"tsp", "teaspoon":"tsp", "large":"large", "small":"small","slice":"slice", "package":"", "strips":"strips", "strip":"strip", "handful":"cup"}
+        special = { "jalapeno":"pepper", "jalapenos":"pepper", "onion":"stalk", "green onion":"stalk", 'jalapeno peppers':"pepper",  "green onions":"stalk"}
+        extra = ["of","and","grated","shredded"]
         
-        return info
+        for part in i.split(" "):
+                if part in convert:
+                        info["info"][1] = convert[part]
+                else:
+                        if part not in extra:
+                                info["name"] += (part + " ")
+
+        info["name"] = info["name"].strip()
+                
+        if (info["info"][1] == "") & (info["name"] in special):
+                info["info"][1] = special[info["name"]]
+                
+        print c(info)
+
+def c(x):
+        return {x['name'] : x['info']}
+
 
 def frac_float(string):
         split = string.find("/")
@@ -114,28 +112,17 @@ def frac_float(string):
 def rmxtraWS(i):
         while "\n" in i:
                 i = i.replace("\n", "")
+        i = i.strip()
         i = " ".join(i.split())
         return i
-
-def amtNotIn(i):
-        for x in ("1","2","3","4","5","6","7","8","9"):
-                if x in i:
-                        return False;
-        return True
 
 #cleanup("1 cup flour")
 #cleanup("2 green onions (chopped)")
 #cleanup("1 (4 ounce) package cream cheese (room temperature)")
 #cleanup("2 jalapeno peppers, cut in half lengthwise and seeded")
 
-a = ["2 jalapeno peppers, cut in half lengthwise and seeded",
-     "2 slices sour dough bread",
-     "1 tablespoon butter, room temperature",
-     "2 tablespoons cream cheese, room temperature",
-     "1/2 cup jack and cheddar cheese, shredded",
+a = ["2 slices sour dough bread",
      "1 tablespoon tortilla chips, crumbled",
-     "3 tablespoons cream cheese, room temperature",
-     '5 tablespoon jalapeno ranch dressing',
      '1 pizza dough',
      '2 jalapeno peppers, sliced **',
      '4 slices bacon, cut into 1 inch pieces and cooked',
@@ -209,14 +196,28 @@ for x in a:
         cleanup(x)
 
 '''
+{'clove garlic': [1.0, '']}
+{'lime': [0.5, '']}
+{'handful cilantro': [1.0, '']}
+{'pound ground beef': [1.0, '']}
+{'buns': [4.0, '']}
+{'pound white fish fillets': [1.0, '']}
+{'batch jerk marinade': [1.0, '']}
+{'batch banana pineapple salsa': [1.0, '']}
+{'pounds short ribs': [2.0, '']}
+{'cloves garlic': [4.0, '']}
+{'inch ginger': [1.0, '']}
+{'Asian pear': [1.0, '']}
+{'green onions': [2.0, '']}
+{'package cream cheese': [1.0, '']}
+{'leaves lettuce': [2.0, '']}
+{'strips bacon': [2.0, '']}
+'''
+
+'''
 for x in range(10):
         getIngreds(35382 + x)
 
-cleanup("2 jalapenos, diced (seed them is you prefer less heat)")
-'''
-
-
-'''
 def recipe_title(json):
 	return json['title']
 
