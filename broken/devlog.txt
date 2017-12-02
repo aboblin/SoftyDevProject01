@@ -1,0 +1,26 @@
+pICKAx
+Adrian Boylan, Karen Chen, Connie Lei, Iris Tao
+Period 8 Soft Dev Project 1
+DEVLOG:
+adrianB -- 2017-11-21 2:03
+  Created the recipe_func.py file and got an API key for the FOOD2FORK API.
+connieC -- 2017-11-21 2:02
+  Played around with API to figure out how to use it.
+karenC -- 2017-11-21 2:01
+  Created app.py and the html templates.
+connieL -- 2017-11-22 2:04
+  Added conniesnotes
+karenC -- 2017-11-22 1:55
+  Began implementing Foundation to index.html, writing styles.css
+karenc —- 2017-11-27 2:03
+  Created the input form (still in need of stylization), beginning to connect app.py with html templates
+karenC —- 2017-11-27 10:57
+  Began laying out recipes.html structure
+boylanA -- 2017-11-28 2:05
+  Completed base functions for recipe_func.py
+connieL -- 2017-11-28 8:45
+  Finished nutri_func.py
+karenC -- 2017-11-29 12:31
+  Connected app.py with the API python files, debugging
+boylanA -- 2017-11-29 4:30 
+  Finished debugging

@@ -1,5 +1,4 @@
 import json, requests
-from fractions import Fraction
 
 def getKey():
         f = open('static/key','r')
@@ -7,66 +6,127 @@ def getKey():
         f.close()
         return key
 
-#input an api_link, returns json recieved from the api
-def api_to_json(api_link):
-	url = requests.get(api_link)
-	return url.json()
+def getLink(ingreds):
+        terms = ""
+        for i in ingreds:
+                terms += (i + ",")
+                api_link = "http://food2fork.com/api/search?key=%s&q=%s" % (getKey(), terms)
+        return api_link
 
-#give a list of ingredients, function uses a search request to receive json and returns that json
-def search_json(ingredients):
-	api_link = "http://food2fork.com/api/search?key=%s&q=" % getKey()
-        api_link += ingredients
-	return api_to_json(api_link)['recipes']
+def getRecipes(ingreds):
+        link = getLink(ingreds)
+        r = requests.get(link)
+        d = r.json()
+        return d['recipes']
 
-def recipe_title(json):
-	return json['title']
+def getRecipeIDs(recipes):
+        rIDs = []
+        for r in recipes:
+                rIDs += [r['recipe_id']]
+        return rIDs
 
-def recipe_source_url(json):
-	return json['source_url']
+def getRecipeInfo(rID):
+        link = "http://food2fork.com/api/get?key=%s&rId=%s" % (getKey(), rID)
+        r = requests.get(link)
+        d = r.json()
+        return d['recipe']
 
-def recipe_id(json):
-	return json['recipe_id']
+def getIngreds(rID):
+        info = getRecipeInfo(rID)
+        ingreds = info['ingredients']
+        d = {}
+        for i in ingreds:
+                d.update(cleanup(i))
+        return d
 
-def is_number(string):
-	try:
-		float(sum(Fraction(s) for s in string.split()))
-		return True
-	except ValueError:
-		return False
+def cleanup(i):
+        info = {"name":"", "info":[0, ""]}
 
-def remove_unwanted(string):
-        string = string.translate(None, '!@;#$&')
-        return string
+        #removing useless
+        useless = ["optional"]
+        for u in useless:
+                if u in i:
+                        return {"": [0, ""]}
+        #end removing useless
 
-#give a recipe Id (received from the search_json), function uses a get request to receive json and returns that json
-def recipe_json(recipeID):
-	api_link = "http://food2fork.com/api/get?key=%s&rId=" % getKey()
-	api_link += str(recipeID)
-	return api_to_json(api_link)['recipe']
+        #checking to make sure amount exists
+        if not any(char.isdigit() for char in i):
+                return {"": [0, ""]}       
+                
+        #removing all (...)
+        while "(" in i:
+                ssnip = i.find("(")
+                esnip = i.find(")")
+                i = i[0:ssnip] + i[esnip:]
+                i = i.replace(")", " ")
+        #end removing all (...)
 
-#creates a dictionary of the ingredients from a recipe in the format {ingredient_name:[amount, unit_of_measurement]}
-def get_ingredients_dict(recipeID):
-        dic = {}
-        for ingredient in recipe_json(recipeID)['ingredients']:
-		ingredient = remove_unwanted(ingredient.encode("ascii", errors="ignore"))
-		while ingredient.find("(") != -1:
-                        if ingredient.find(")") != -1:
-			        ingredient = ingredient.replace(ingredient[ingredient.find("("): ingredient.find(")")+2], "")
-                        else:
-                                ingredient = ingredient.replace(ingredient[ingredient.find("("):], "")
-		ing_list = ingredient.split(' ')
-		#print ing_list
-                if len(ing_list) > 2:
-		        if is_number(ing_list[1]) and is_number(ing_list[0]):
-			        removable_parts = ing_list[0] + " " + ing_list[1] + " " + ing_list[2]
-			        dic[ingredient[len(removable_parts)+1:]] = [float(sum(Fraction(s) for s in (ing_list[0]+" "+ing_list[1]).split())), ing_list[2]]
-		        elif is_number(ing_list[0]):
-			        removable_parts = ing_list[0] + " " + ing_list[1]
-			        dic[ingredient[len(removable_parts)+1:]] = [float(sum(Fraction(s) for s in ing_list[0].split())), ing_list[1]]
-	                        #print dic
-	return dic
+        i = i.replace("-", " ")
 
-if __name__ == "__main__":
-	print search_json(['salmon'])
-	#print recipe_json(35382)
-	print get_ingredients_dict(47746)
+        try:
+                #parsing for amount
+                esnip = i.find(" ")
+                if '/' in i:
+                        info["info"][0] = frac_float(i[:esnip])
+                else:
+                        info["info"][0] = float(i[:esnip])
+                        i = i[esnip:]
+                #end parsing for amount
+        except:
+                return {"": [0, ""]}       
+
+        #cutting off extra
+        while "," in i:
+                ssnip = i.find(",")
+                i = i[:ssnip]
+        #end cutting off extra
+
+        while ";" in i:
+                ssnip = i.find(";")
+                i = i[:ssnip]
+
+        while "or" in i:
+                ssnip = i.find("or")
+                i = i[:ssnip]
+                
+        #remove extra whitespace
+        i = rmxtraWS(i)
+        
+        convert = {"cups":"cup", "cup":"cup", "slices":"slice", "tablespoon":"tablespoon","tablespoons":"tablespoon", "teaspoons":"tsp", "teaspoon":"tsp", "large":"large", "small":"small","slice":"slice", "package":"", "strips":"strips", "strip":"strip", "handful":"cup"}
+        special = { "jalapeno":"pepper", "jalapenos":"pepper", "onion":"stalk", "green onion":"stalk", 'jalapeno peppers':"pepper",  "green onions":"stalk"}
+        extra = ["of","and","grated","shredded", "such", "as"]
+        
+        for part in i.split(" "):
+                if part in convert:
+                        info["info"][1] = convert[part]
+                else:
+                        if part not in extra:
+                                info["name"] += (part + " ")
+
+        info["name"] = info["name"].strip(" &#1234567890;")
+                
+        if (info["info"][1] == "") & (info["name"] in special):
+                info["info"][1] = special[info["name"]]
+
+        return {info["name"]:info["info"]}
+
+def frac_float(string):
+        split = string.find("/")
+        num = string[:split]
+        den = string[split + 1:]
+        try:
+                return float(num)/float(den)
+        except:
+                return -1
+
+def rmxtraWS(i):
+        while "\n" in i:
+                i = i.replace("\n", "")
+        i = i.strip()
+        i = " ".join(i.split())
+        return i
+
+def getTS(rID):
+        d = getRecipeInfo(rID)
+	return [d['title'], d['source_url']]
+
