@@ -1,7 +1,7 @@
 import requests, json, sys
 
 def getKey():
-    f = open("../static/govkey","r")
+    f = open("static/govkey","r")
     key = f.read()
     f.close()
     return key
@@ -27,7 +27,6 @@ def getID(ingred):
 
 def getNutri(ID, amt, unit):
     link = "https://api.nal.usda.gov/ndb/reports?ndbno=%s&type=b&format=json&api_key=%s" % (ID, getKey())
-    print link
     r = requests.get(link)
     d = r.json()
     if 'errors' in d:
@@ -47,11 +46,8 @@ def calcNutr(amount, unit):
 def nutri(nutrient, unit):
     for measurement in nutrient:
         if measurement != None:
-            print measurement['label']
-            '''
             if unit in measurement['label']:
                 return float(measurement['value'])
-            '''
     return -1
 
 def sumNutri(ingreds):
@@ -67,21 +63,13 @@ def sumNutri(ingreds):
             broken += [i]
     return [carbs, protein, fats, broken]
 
-
-'''
-s = {'clove garlic': [1.0, ''],
-     'lime': [0.5, ''],
-     'pound ground beef': [1.0, ''],
-     'pound white fish fillets': [1.0, ''],
-     'batch jerk marinade': [1.0, ''],
-     'batch banana pineapple salsa': [1.0, ''],
-     'pounds short ribs': [2.0, ''],
-     'cloves garlic': [4.0, ''],
-     'inch ginger': [1.0, ''],
-     'cream cheese': [1.0, ''],
-     'leaves lettuce': [2.0, ''],
-     'strips bacon': [2.0, '']}
-
-addDetails(s)
-print s
-'''
+def calcDiff(ingreds, info):
+    rNutri = sumNutri(ingreds)
+    diff = 0
+    if info["protein"] != -1:
+        diff += abs(rNutri[1] - info["protein"])
+    if info["carb"] != -1:
+        diff += abs(rNutri[1] - info["carb"])
+    if info["fat"] != -1:
+        diff += abs(rNutri[1] - info["fat"])
+    return diff

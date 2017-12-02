@@ -6,15 +6,22 @@ import json
 
 app = Flask(__name__)
 
-def findRecipes(searchTerms):
-       recipes = getRecipes(searchTerms)
+def findRecipes(info):
+       recipes = getRecipes(info["search"])
        recipeIDs = getRecipeIDs(recipes)
 
-       differences = []
-
-       for recipeID in recipeIDs:
-              nutrient_info = sumNutri(addDetails(get_ingredients_dict(recipeID)))
-              differences.append(abs(nutrient_info[0] - carbamount) + abs(nutrient_info[1] - proteinamount) + abs(nutrient_info[2] - fatamount))
+       diff = {}
+       for rID in recipeIDs:
+              ingreds = getIngreds(rID)
+              rDiff = calcDiff(ingreds, info)
+              print rDiff
+              '''
+              if len(diff) < 3:
+                     diff[rDiff] = rID
+              elif rDiff < max(diff):
+                     del diff[max(diff)]
+                     diff[rDiff] = rID
+       return diff
        chosen = []
        chosen1 = recipeIDs[differences.index(min(differences))]
        differences.pop(differences.index(min(differences)))
@@ -24,17 +31,19 @@ def findRecipes(searchTerms):
        differences.pop(differences.index(min(differences)))
 
        return chosen
-
+       '''
+       
 @app.route('/', methods=['GET','POST'])
 def root():
        if request.method == 'POST':
               info = getInfo()
+              findRecipes(info)
               return render_template('temp.html', search = info['search'])
        else:
               return render_template('index.html')
 
 def getInfo():
-       info = {'protein': 0.0, 'carb': 0.0, 'fat': 0.0}
+       info = {'protein': -1, 'carb': -1, 'fat': -1}
        info['search'] = request.form['food']
        if request.form["protein"] != "":
               info['protein'] = float(request.form["protein"])
@@ -46,3 +55,4 @@ def getInfo():
 
 if __name__ == '__main__':
 	app.run(debug = True)
+        
